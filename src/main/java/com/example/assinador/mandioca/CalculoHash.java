@@ -6,11 +6,19 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class CalculoHash {
-    public static String calcular(MultipartFile arquivo) {
+    public static String calcular(MultipartFile arquivo, String token) {
         try {
-            // Calcula a hash SHA-256 do conteúdo do arquivo
+            // Obtem o conteúdo do arquivo
+            byte[] arquivoBytes = arquivo.getBytes();
+
+            // Concatena o token com o conteúdo do arquivo
+            byte[] dataToHash = new byte[arquivoBytes.length + token.getBytes().length];
+            System.arraycopy(arquivoBytes, 0, dataToHash, 0, arquivoBytes.length);
+            System.arraycopy(token.getBytes(), 0, dataToHash, arquivoBytes.length, token.getBytes().length);
+
+            // Calcula a hash SHA-256 do conteúdo do arquivo + token
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(arquivo.getBytes());
+            byte[] hash = digest.digest(dataToHash);
 
             // Converte a hash em formato hexadecimal
             StringBuilder hexString = new StringBuilder();

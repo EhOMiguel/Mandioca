@@ -15,7 +15,7 @@ public class MetadadosHandler {
         try (InputStream inputStream = arquivo.getInputStream();
              PDDocument document = PDDocument.load(inputStream)) {
             PDDocumentInformation info = document.getDocumentInformation();
-            info.setCustomMetadataValue("Hash_SHA256", hash);
+            info.setCustomMetadataValue("Hash", hash);
             info.setCustomMetadataValue("Token", token);
 
             // Salva os dados do documento em um fluxo de bytes
