@@ -2,11 +2,12 @@ package com.example.assinador.mandioca;
 
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class CalculoHash {
-    public static String calcular(MultipartFile arquivo, String token) {
+    public static BigInteger calcular(MultipartFile arquivo, String token) {
         try {
             // Obtem o conteúdo do arquivo
             byte[] arquivoBytes = arquivo.getBytes();
@@ -20,23 +21,15 @@ public class CalculoHash {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(dataToHash);
 
-            // Converte a hash em formato hexadecimal
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : hash) {
-                String hex = Integer.toHexString(0xff & b);
-                if (hex.length() == 1) hexString.append('0');
-                hexString.append(hex);
-            }
+            // Converte a hash em formato hexadecimal para decimal
+            BigInteger hashDecimal = new BigInteger(1, hash);
 
-            // Retorna a hash em formato hexadecimal
-            return hexString.toString();
+            // Retorna a hash em formato decimal
+            return hashDecimal;
 
-        } catch (IOException e) {
+        } catch (IOException | NoSuchAlgorithmException e) {
             e.printStackTrace();
-            return "Erro de IO ao processar o arquivo";
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return "Algoritmo de hash não disponível";
+            return null; // Retorna null em caso de exceção
         }
     }
 }
