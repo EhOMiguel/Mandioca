@@ -13,11 +13,11 @@ public class CalculoHash {
             byte[] arquivoBytes = arquivo.getBytes();
 
             // Concatena o token com o conteúdo do arquivo
-            byte[] dataToHash = new byte[arquivoBytes.length + token.getBytes().length];
+            byte[] dataToHash = new byte[arquivoBytes.length];
             System.arraycopy(arquivoBytes, 0, dataToHash, 0, arquivoBytes.length);
-            System.arraycopy(token.getBytes(), 0, dataToHash, arquivoBytes.length, token.getBytes().length);
+            // System.arraycopy(token.getBytes(), 0, dataToHash, arquivoBytes.length, token.getBytes().length);
 
-            // Calcula a hash SHA-256 do conteúdo do arquivo + token
+            // Calcula a hash SHA-256 do conteúdo do arquivo
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(dataToHash);
 
