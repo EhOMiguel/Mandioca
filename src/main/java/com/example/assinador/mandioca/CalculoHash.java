@@ -7,12 +7,12 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class CalculoHash {
-    public static BigInteger calcular(MultipartFile arquivo, String token) {
+    public static BigInteger calcular(MultipartFile arquivo) {
         try {
             // Obtem o conteúdo do arquivo
             byte[] arquivoBytes = arquivo.getBytes();
 
-            // Concatena o token com o conteúdo do arquivo
+            // Concatena o token com o conteúdo do arquivo (tirei o token)
             byte[] dataToHash = new byte[arquivoBytes.length];
             System.arraycopy(arquivoBytes, 0, dataToHash, 0, arquivoBytes.length);
             // System.arraycopy(token.getBytes(), 0, dataToHash, arquivoBytes.length, token.getBytes().length);

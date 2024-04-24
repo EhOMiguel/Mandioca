@@ -29,7 +29,7 @@ public class GetArquivo {
         System.out.println("n: " + n);
 
         CalculoHash hashing = new CalculoHash();
-        BigInteger hash = hashing.calcular(arquivo, token);
+        BigInteger hash = hashing.calcular(arquivo);
 
         Assinador assinador = new Assinador();
         String assinaturaDec = assinador.getAssinatura(hash, d, n);
