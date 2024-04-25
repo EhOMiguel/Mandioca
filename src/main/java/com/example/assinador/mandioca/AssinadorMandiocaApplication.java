@@ -9,5 +9,4 @@ public class AssinadorMandiocaApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AssinadorMandiocaApplication.class, args);
 	}
-
 }

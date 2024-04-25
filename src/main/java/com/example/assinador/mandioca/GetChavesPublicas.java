@@ -10,7 +10,7 @@ public class GetChavesPublicas {
     private static GetChavesPublicas instance;
     private Map<String, String> chavesPublicas = new HashMap<>();
     private RestTemplate restTemplate = new RestTemplate();
-    private String url = "http://localhost:8080/chavesPublicas";
+    private String url = "http://localhost:8082/chavesPublicas";
 
     // Construtor privado para evitar instanciar diretamente
     private GetChavesPublicas() {}
@@ -30,7 +30,7 @@ public class GetChavesPublicas {
         if (chave == null) {
             // Se não encontrar, faz a requisição para obter as chaves públicas
             chave = restTemplate.getForObject(url + "?token=" + token, String.class);
-
+            
             // Armazena o resultado no mapa
             chavesPublicas.put(token, chave);
         }

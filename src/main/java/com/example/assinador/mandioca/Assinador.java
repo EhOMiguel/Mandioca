@@ -7,6 +7,7 @@ public class Assinador {
         BigInteger resultado = hash.modPow(d, n);
 
         System.out.println("assinatura_decimal: " + resultado);
+        System.out.println("assinatura_hexa: " + resultado.toString(16));
 
         return resultado.toString(16);
     }

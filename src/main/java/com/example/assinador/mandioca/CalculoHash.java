@@ -24,8 +24,19 @@ public class CalculoHash {
             // Converte a hash em formato hexadecimal para decimal
             BigInteger hashDecimal = new BigInteger(1, hash);
 
-            // Retorna a hash em formato decimal
-            return hashDecimal;
+            System.out.println("HASH DO ARTHUR" + hashDecimal);
+
+            // Converte para string para extrair os primeiros 5 dígitos
+            String hashString = hashDecimal.toString();
+            String firstFiveDigits = hashString.length() > 5 ? hashString.substring(0, 5) : hashString;
+
+            // Converte os primeiros 5 dígitos de volta para BigInteger
+            BigInteger firstFiveDigitsBigInteger = new BigInteger(firstFiveDigits);
+
+            System.out.println("HASH DO ARTHUR 5 digitos" + firstFiveDigitsBigInteger);
+
+            // Retorna apenas os primeiros 5 dígitos em formato BigInteger
+            return firstFiveDigitsBigInteger;
 
         } catch (IOException | NoSuchAlgorithmException e) {
             e.printStackTrace();
