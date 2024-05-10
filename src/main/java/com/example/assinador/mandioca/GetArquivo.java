@@ -15,6 +15,10 @@ public class GetArquivo {
     public Map<String, Object> arquivo(@RequestParam("arquivo") MultipartFile arquivo,
                        @RequestParam("token") String token) {
 
+        if(!arquivo.getOriginalFilename().endsWith(".pdf")){
+            throw new IllegalArgumentException("Só arquivos PDFs são aceitos");
+        }
+
         GetChavesPublicas chavesPublicas = GetChavesPublicas.getInstance();
         String chaves = chavesPublicas.getChave(token);
 
