@@ -1,5 +1,7 @@
 package com.example.assinador.mandioca;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,13 +41,15 @@ public class GetArquivo {
         BigInteger hash = hashing.calcular(arquivo);
 
         Assinador assinador = new Assinador();
-        String assinaturaDec = assinador.getAssinatura(hash, d, n);
+        byte[] assinaturaDec = assinador.getAssinatura(hash, d, n);
 
-        // Criar o JSON de resposta
-        Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("ass", assinaturaDec);
-        responseMap.put("token", token);
+        AssinaturaHandler handler = new AssinaturaHandler();
+        byte[] arquivo_ass = handler.anexar(arquivo, assinaturaDec);
 
-        return ResponseEntity.ok(responseMap);
+        System.out.println(arquivo_ass.length);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(arquivo_ass);
     }
 }

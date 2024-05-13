@@ -2,13 +2,13 @@ package com.example.assinador.mandioca;
 import java.math.BigInteger;
 
 public class Assinador {
-    public static String getAssinatura(BigInteger hash, BigInteger d, BigInteger n) {
-        // Calcula a potência de hash elevado a d
+    public static byte[] getAssinatura(BigInteger hash, BigInteger d, BigInteger n) {
+        // Calcula a potência de hash elevado a d, que é a assinatura
         BigInteger resultado = hash.modPow(d, n);
 
-        System.out.println("assinatura_decimal: " + resultado);
-        System.out.println("assinatura_hexa: " + resultado.toString(16));
+        // Converte o resultado para um array de bytes
+        byte[] signatureBytes = resultado.toByteArray();
 
-        return resultado.toString(16);
+        return signatureBytes;
     }
 }
