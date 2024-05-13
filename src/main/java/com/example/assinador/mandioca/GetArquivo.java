@@ -1,5 +1,6 @@
 package com.example.assinador.mandioca;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.json.JSONObject;
@@ -12,12 +13,18 @@ import java.util.Map;
 public class GetArquivo {
 
     @PostMapping("/rota")
-    public Map<String, Object> arquivo(@RequestParam("arquivo") MultipartFile arquivo,
+    public ResponseEntity<?> arquivo(@RequestParam("arquivo") MultipartFile arquivo,
                        @RequestParam("token") String token) {
+
+        if(!arquivo.getOriginalFilename().endsWith(".pdf")){
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Formato de arquivo inválido. Apenas arquivos PDF são aceitos.");
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
 
         GetChavesPublicas chavesPublicas = GetChavesPublicas.getInstance();
         String chaves = chavesPublicas.getChave(token);
-
+    
         JSONObject jsonObject = new JSONObject(chaves);
 
         // Obter os valores de e e n como BigInteger
@@ -39,6 +46,6 @@ public class GetArquivo {
         responseMap.put("ass", assinaturaDec);
         responseMap.put("token", token);
 
-        return responseMap;
+        return ResponseEntity.ok(responseMap);
     }
 }
