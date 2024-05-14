@@ -16,7 +16,7 @@ public class GetArquivo {
 
     @PostMapping("/rota")
     public ResponseEntity<?> arquivo(@RequestParam("arquivo") MultipartFile arquivo,
-                       @RequestParam("token") String token) {
+                       @RequestParam("token") String token) throws Exception {
 
         if(!arquivo.getOriginalFilename().endsWith(".pdf")){
             Map<String, String> errorResponse = new HashMap<>();
@@ -38,15 +38,13 @@ public class GetArquivo {
         System.out.println("n: " + n);
 
         CalculoHash hashing = new CalculoHash();
-        BigInteger hash = hashing.calcular(arquivo);
+        byte[] hash = hashing.calcular(arquivo);
 
         Assinador assinador = new Assinador();
-        byte[] assinaturaDec = assinador.getAssinatura(hash, d, n);
+        byte[] assinatura = assinador.getAssinatura(hash, d, n);
 
         AssinaturaHandler handler = new AssinaturaHandler();
-        byte[] arquivo_ass = handler.anexar(arquivo, assinaturaDec);
-
-        System.out.println(arquivo_ass.length);
+        byte[] arquivo_ass = handler.anexar(arquivo, assinatura);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)

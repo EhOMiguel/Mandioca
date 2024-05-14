@@ -7,7 +7,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class CalculoHash {
-    public static BigInteger calcular(MultipartFile arquivo) {
+    public static byte[] calcular(MultipartFile arquivo) {
         try {
             // Obtem o conteúdo do arquivo em array de bytes
             byte[] arquivoBytes = arquivo.getBytes();
@@ -16,13 +16,10 @@ public class CalculoHash {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(arquivoBytes);
 
-            // Converte a hash em formato hexadecimal para decimal
-            BigInteger hashDecimal = new BigInteger(1, hash);
-
-            System.out.println("HASH AQUI" + hashDecimal);
+            System.out.println("HASH AQUI" + hash);
 
             // Retorna a hash decimal no formato BigInteger
-            return hashDecimal;
+            return hash;
 
         } catch (IOException | NoSuchAlgorithmException e) {
             e.printStackTrace();

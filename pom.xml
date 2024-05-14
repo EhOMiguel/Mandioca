@@ -34,11 +34,20 @@
 			<version>3.2.0</version>
 		</dependency>
 
+
+
 		<dependency>
-			<groupId>org.apache.pdfbox</groupId>
-			<artifactId>pdfbox</artifactId>
-			<version>2.0.24</version>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>kernel</artifactId>
+			<version>7.2.5</version>
 		</dependency>
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>forms</artifactId>
+			<version>7.2.5</version>
+		</dependency>
+
+
 
 		<dependency>
 			<groupId>commons-codec</groupId>
@@ -51,7 +60,12 @@
 			<artifactId>json</artifactId>
 			<version>20231013</version>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>sign</artifactId>
+            <version>8.0.2</version>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>
