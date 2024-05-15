@@ -1,14 +1,17 @@
 package com.example.assinador.mandioca;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.json.JSONObject;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.json.JSONObject;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api")
@@ -44,7 +47,7 @@ public class GetArquivo {
         byte[] assinatura = assinador.getAssinatura(hash, d, n);
 
         AssinaturaHandler handler = new AssinaturaHandler();
-        byte[] arquivo_ass = handler.anexar(arquivo, assinatura);
+        byte[] arquivo_ass = handler.anexarAssinatura(arquivo, assinatura);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)

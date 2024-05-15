@@ -1,52 +1,61 @@
 package com.example.assinador.mandioca;
 
-import com.itextpdf.forms.PdfAcroForm;
-import com.itextpdf.forms.fields.PdfFormField;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfReader;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.Base64;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.GeneralSecurityException;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import com.itextpdf.kernel.pdf.PdfDictionary;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfName;
+import com.itextpdf.kernel.pdf.PdfReader;
+import com.itextpdf.kernel.pdf.PdfString;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.StampingProperties;
+import com.itextpdf.signatures.ExternalBlankSignatureContainer;
+import com.itextpdf.signatures.IExternalSignatureContainer;
+import com.itextpdf.signatures.PdfSigner;
 
 public class AssinaturaHandler {
 
-    public byte[] anexar(MultipartFile file, byte[] signature) {
+    public byte[] anexarAssinatura(MultipartFile file, byte[] signatureBytes) {
         try {
-            // Convertendo MultipartFile para ByteArrayInputStream
             ByteArrayInputStream inputPdfStream = new ByteArrayInputStream(file.getBytes());
-
-            // Preparar ByteArrayOutputStream para o PDF de saída
             ByteArrayOutputStream outputPdfStream = new ByteArrayOutputStream();
 
-            // Carregar o documento PDF
-            PdfDocument pdfDoc = new PdfDocument(new PdfReader(inputPdfStream), new PdfWriter(outputPdfStream));
+            PdfReader reader = new PdfReader(inputPdfStream);
+            PdfSigner signer = new PdfSigner(reader, outputPdfStream, new StampingProperties().useAppendMode());
 
-            // Acessar o formulário no PDF
-            PdfAcroForm form = PdfAcroForm.getAcroForm(pdfDoc, true);
+            // Preparar o espaço no documento para a assinatura
+            signer.setFieldName("signature");
+            ExternalBlankSignatureContainer externalContainer = new ExternalBlankSignatureContainer(PdfName.Adobe_PPKLite, PdfName.Adbe_pkcs7_detached);
+            signer.signExternalContainer(externalContainer, 8192);
 
-            // Converter a assinatura em uma string base64
-            String base64Signature = Base64.getEncoder().encodeToString(signature);
+            // Carrega o documento modificado com espaço reservado para a assinatura
+            PdfDocument pdfDoc = new PdfDocument(new PdfReader(new ByteArrayInputStream(outputPdfStream.toByteArray())), new PdfWriter(outputPdfStream));
 
-            System.out.println("Assinatura em Base64: " + base64Signature);
+            // Preenchendo o espaço reservado com a assinatura
+            PdfDictionary signatureDictionary = new PdfDictionary();
+            signatureDictionary.put(PdfName.Contents, new PdfString(signatureBytes).setHexWriting(true));
+            signer.signExternalContainer(new IExternalSignatureContainer() {
+                @Override
+                public byte[] sign(InputStream data) {
+                    return signatureBytes;
+                }
 
-            // Criar um campo de formulário para a assinatura, se não existir
-            if (form.getField("signature") == null) {
-                PdfFormField signatureField = PdfFormField.createText(pdfDoc);
-                signatureField.setFieldName("signature");
-                form.addField(signatureField);
-            }
+                @Override
+                public void modifySigningDictionary(PdfDictionary signDic) {
+                    signDic.putAll(signatureDictionary);
+                }
+            }, 8192);
 
-            // Definir o valor do campo de assinatura
-            form.getField("signature").setValue(base64Signature);
-
-            // Fechar o documento (isto também salva o documento)
             pdfDoc.close();
 
-            // Retornar o PDF como array de bytes
             return outputPdfStream.toByteArray();
-        } catch (Exception e) {
+        } catch (IOException | GeneralSecurityException e) {
             e.printStackTrace();
             return null;
         }
