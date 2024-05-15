@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
 
+import com.itextpdf.signatures.PdfSignatureAppearance;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.itextpdf.kernel.pdf.PdfDictionary;
@@ -29,30 +30,29 @@ public class AssinaturaHandler {
             PdfReader reader = new PdfReader(inputPdfStream);
             PdfSigner signer = new PdfSigner(reader, outputPdfStream, new StampingProperties().useAppendMode());
 
-            // Preparar o espaço no documento para a assinatura
-            signer.setFieldName("signature");
-            ExternalBlankSignatureContainer externalContainer = new ExternalBlankSignatureContainer(PdfName.Adobe_PPKLite, PdfName.Adbe_pkcs7_detached);
-            signer.signExternalContainer(externalContainer, 8192);
+            // Definindo a aparência da assinatura
+            PdfSignatureAppearance appearance = signer.getSignatureAppearance()
+                    .setReason("Assinatura Digital")
+                    .setLocation("Sistema de Assinatura")
+                    .setSignatureCreator("Meu Sistema");
 
-            // Carrega o documento modificado com espaço reservado para a assinatura
-            PdfDocument pdfDoc = new PdfDocument(new PdfReader(new ByteArrayInputStream(outputPdfStream.toByteArray())), new PdfWriter(outputPdfStream));
-
-            // Preenchendo o espaço reservado com a assinatura
-            PdfDictionary signatureDictionary = new PdfDictionary();
-            signatureDictionary.put(PdfName.Contents, new PdfString(signatureBytes).setHexWriting(true));
-            signer.signExternalContainer(new IExternalSignatureContainer() {
+            // Preparando um contêiner de assinatura em branco para inserção de assinatura
+            IExternalSignatureContainer blankContainer = new IExternalSignatureContainer() {
                 @Override
                 public byte[] sign(InputStream data) {
-                    return signatureBytes;
+                    return signatureBytes;  // Aqui você inseriria o processo de assinatura real
                 }
 
                 @Override
                 public void modifySigningDictionary(PdfDictionary signDic) {
-                    signDic.putAll(signatureDictionary);
+                    signDic.put(PdfName.Filter, PdfName.Adobe_PPKLite);
+                    signDic.put(PdfName.SubFilter, PdfName.Adbe_pkcs7_detached);
                 }
-            }, 8192);
+            };
 
-            pdfDoc.close();
+            // Assinando e fechando o documento
+            // O PdfSigner cuida de inserir o ByteRange corretamente
+            signer.signExternalContainer(blankContainer, 8192);
 
             return outputPdfStream.toByteArray();
         } catch (IOException | GeneralSecurityException e) {

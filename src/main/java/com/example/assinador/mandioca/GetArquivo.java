@@ -41,7 +41,7 @@ public class GetArquivo {
         System.out.println("n: " + n);
 
         CalculoHash hashing = new CalculoHash();
-        byte[] hash = hashing.calcular(arquivo);
+        byte[] hash = hashing.calcularHash(arquivo);
 
         Assinador assinador = new Assinador();
         byte[] assinatura = assinador.getAssinatura(hash, d, n);
