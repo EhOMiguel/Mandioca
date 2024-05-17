@@ -2,7 +2,7 @@ package com.example.assinador.mandioca;
 import java.math.BigInteger;
 
 public class Assinador {
-    public static byte[] getAssinatura(byte[] hash, BigInteger d, BigInteger n) {
+    public static byte[] assinar(byte[] hash, BigInteger d, BigInteger n) {
         BigInteger hashInt = new BigInteger(1, hash);
 
         System.out.println("HASH DO ARQUIVO: " + hashInt);

@@ -40,17 +40,8 @@ public class GetArquivo {
         System.out.println("d: " + d);
         System.out.println("n: " + n);
 
-        // Cria um novo PDF com espaço reservado para a assinatura
         AssinaturaHandler handler = new AssinaturaHandler();
-        byte[] arquivo_preparado = handler.prepararAssinatura(arquivo);
-
-        CalculoHash hashing = new CalculoHash();
-        byte[] hash = hashing.calcularHash(arquivo_preparado);
-
-        Assinador assinador = new Assinador();
-        byte[] assinatura = assinador.getAssinatura(hash, d, n);
-
-        byte[] arquivo_ass = handler.anexarAssinatura(arquivo_preparado, assinatura);
+        byte[] arquivo_ass = handler.anexarAssinatura(arquivo, d, n);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
