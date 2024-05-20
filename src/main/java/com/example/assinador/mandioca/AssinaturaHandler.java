@@ -7,18 +7,16 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 
+import com.itextpdf.kernel.pdf.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.itextpdf.kernel.geom.Rectangle;
-import com.itextpdf.kernel.pdf.PdfDictionary;
-import com.itextpdf.kernel.pdf.PdfReader;
-import com.itextpdf.kernel.pdf.StampingProperties;
 import com.itextpdf.signatures.IExternalSignatureContainer;
 import com.itextpdf.signatures.PdfSignatureAppearance;
 import com.itextpdf.signatures.PdfSigner;
 
 public class AssinaturaHandler {
-    public byte[] anexarAssinatura(MultipartFile arquivo, BigInteger d, BigInteger n) throws IOException, GeneralSecurityException {
+    public byte[] anexarAssinatura(MultipartFile arquivo, BigInteger d, BigInteger n, String token) throws IOException, GeneralSecurityException {
         ByteArrayInputStream inputPdfStream = new ByteArrayInputStream(arquivo.getBytes());
         ByteArrayOutputStream outputPdfStream = new ByteArrayOutputStream();
 
@@ -52,7 +50,8 @@ public class AssinaturaHandler {
 
             @Override
             public void modifySigningDictionary(PdfDictionary signDic) {
-                // Aqui você pode modificar o dicionário de assinatura se necessário
+                // Adiciona o token do usuário ao dicionário de assinatura
+                signDic.put(new PdfName("UserToken"), new PdfString(token));
             }
         };
 

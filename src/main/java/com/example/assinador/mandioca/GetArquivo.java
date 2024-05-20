@@ -40,8 +40,14 @@ public class GetArquivo {
         System.out.println("d: " + d);
         System.out.println("n: " + n);
 
-        AssinaturaHandler handler = new AssinaturaHandler();
-        byte[] arquivo_ass = handler.anexarAssinatura(arquivo, d, n);
+        AssinaturaHandler assinador = new AssinaturaHandler();
+        byte[] arquivo_ass = assinador.anexarAssinatura(arquivo, d, n, token);
+
+//        VerificadorTeste verificador = new VerificadorTeste();
+//        verificador.verificar(arquivo_ass);
+
+        DescriptografiaTeste descriptografia = new DescriptografiaTeste();
+        descriptografia.descriptografar(arquivo_ass);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
