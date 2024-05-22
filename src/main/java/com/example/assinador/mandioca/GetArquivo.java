@@ -43,11 +43,11 @@ public class GetArquivo {
         AssinaturaHandler assinador = new AssinaturaHandler();
         byte[] arquivo_ass = assinador.anexarAssinatura(arquivo, d, n, token);
 
-//        VerificadorTeste verificador = new VerificadorTeste();
-//        verificador.verificar(arquivo_ass);
+        // VerificadorTeste verificador = new VerificadorTeste();
+        // verificador.verificar(arquivo_ass);
 
-        DescriptografiaTeste descriptografia = new DescriptografiaTeste();
-        descriptografia.descriptografar(arquivo_ass);
+        // DescriptografiaTeste descriptografia = new DescriptografiaTeste();
+        // descriptografia.descriptografar(arquivo_ass);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
